@@ -45,9 +45,10 @@
                                     src="https://cdn2.iconfinder.com/data/icons/cartoon-avatars/128/Avatars_hipster-512.png"
                                     alt="avatar" width="100%"></div>
                             <div class="col-md-8">
-                                <h2 class="profile-header">Фамилия и имя: <span>Иванов Иван</span></h2>
-                                <p class="profile-id">ID: <span>1</span></p>
-                                <p class="profile-mail">E-mail: <span>ivanovii@ya.ru</span></p>
+                                <h2 class="profile-header">Фамилия и имя: <span id="userName"></span>
+                                </h2>
+                                <p class="profile-id">ID: <span id="userId"></span></p>
+                                <p class="profile-mail">E-mail: <span id="userMail"></span></p>
                                 <p>Что-то о себе.....Lorem ipsum dolor sit amet consectetur, adipisicing elit.
                                     Aspernatur, quasi cum? Aut culpa debitis provident nobis non quo assumenda, veniam
                                     quidem similique optio, impedit officia accusantium ullam reiciendis, beatae
@@ -118,6 +119,23 @@
                                 </div>
                             </div>
                         </div>
+                        <h2 class="text-center my-5">Список друзей</h2>
+                        <div class="row">
+                            <div class="col-12 mx-auto">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Фамилия и имя</th>
+                                            <th scope="col">Email</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="usersList">
+                                        <!---формируем список пользователей-->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                     <div class="tab-pane fade" id="v-pills-settings" role="tabpanel"
                         aria-labelledby="v-pills-settings-tab">
@@ -145,6 +163,16 @@
         let pathname = location.pathname.split("/")[3];
         let navLinks = document.querySelectorAll(".nav-link");
 
+
+        async function getUser() {
+            let response = await fetch("/0155/getUser");
+            return await response.json();
+        }
+        async function getUsers() {
+            let response = await fetch("/0155/getUsers");
+            return await response.json();
+        }
+
         addEventListener("popstate", (event) => {
             let path = location.pathname.split("/")[3];
             if (path == "profile") {
@@ -158,8 +186,30 @@
         )
 
         if (pathname == "profile") {
+            getUser().then((user) => {
+                userName.innerText = `${user.name} ${user.lastname}`;
+                userId.innerText = `${user.id}`;
+                userMail.innerText = `${user.email}`;
+                // console.log(user);
+            }
+            )
+
             $('#v-pills-profile').tab('show')
         } else if (pathname == "messages") {
+            getUsers().then(
+                (users) => {
+                    console.log(users);
+
+                    for (let i = 0; i < users.length; i++) {
+                        usersList.insertAdjacentHTML("beforeend",
+                            `<tr>
+                        <th scope="row">${users[i].id}</th>
+                        <td>${users[i].name} ${users[i].lastname}</td>
+                        <td>${users[i].email}</td>
+                    </tr>`
+                        );
+                    }
+                });
             $('#v-pills-messages').tab('show')
         } else if (pathname == "settings") {
             $('#v-pills-settings').tab('show')

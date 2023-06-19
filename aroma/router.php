@@ -16,6 +16,10 @@ if ($url[2] == "auth") {
     echo User::addUser($_POST["name"], $_POST["lastname"], $_POST["email"], $_POST["pass"]);
 } else if ($url[2] == "authUser") {
     echo User::authUser($_POST["email"], $_POST["pass"]);
+} else if ($url[2] == "getUser") {
+    echo User::getUser($_SESSION["id"]);
+} else if ($url[2] == "getUsers") {
+    echo User::getUsers();
 } else {
     $content = file_get_contents("pages/ind.php");
 }

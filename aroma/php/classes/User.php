@@ -55,12 +55,32 @@ class User
 
         $result = $mysqli->query("SELECT * FROM `users` WHERE `email` = '$email'");
         $result = $result->fetch_assoc();
-        $hash = $result["pass"];
+        // $hash = $result["pass"];
 
-        if (password_verify($pass, $hash)) {
+        if (password_verify($pass,  $result["pass"])) {
+            $_SESSION["id"] = $result["id"];
             return json_encode(["result" => "ok"]);
         } else {
-            return json_encode(["result" => "user_not_found"]);
+            return json_encode(["result" => "no"]);
         }
+    }
+    //статический метод получения одного пользователя
+    static function getUser($userId)
+    {
+        global $mysqli;
+        $result = $mysqli->query("SELECT `id`, `name`, `lastname`, `email` FROM `users` WHERE `id` = '$userId'");
+        $result = $result->fetch_assoc();
+        return json_encode($result);
+    }
+    // статический метод получения всех пользователей
+    static function getUsers()
+    {
+        global $mysqli;
+        $users = array();
+        $result = $mysqli->query("SELECT `id`, `name`, `lastname`, `email` FROM `users` WHERE 1 ");
+        while ($row = $result->fetch_assoc()) {
+            $users[] = $row;
+        }
+        return json_encode($users);
     }
 }

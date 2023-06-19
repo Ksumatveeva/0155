@@ -51,7 +51,6 @@
 	</section>
 	<!--================End Login Box Area =================-->
 
-
 	<!-- Модальное окно -->
 	<div class="modal fade" id="myModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered">
@@ -75,12 +74,15 @@
 
 			let res = await response.json();
 			if (res.result == "ok") {
+				console.log("lk");
 				$('#myModal').modal('show');
 				setTimeout(() => {
 					location.href = "/0155/users/profile";
 				}, 3000)
-			} else if (res.result == "user_not_found") {
-				info.innerText = "Такого пользователя не существует!";
+			} else if (res.result == "rejected") {
+				info.innerText = "Логин или пароль не верный";
+			} else {
+				alert("Неизвестная ошибка");
 			}
 		}
 	</script>
